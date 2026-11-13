@@ -52,10 +52,10 @@ jobs:
           make tools/install -j$(nproc) V=s
           make toolchain/install -j$(nproc) V=s
 
-      - name: Prepare Kernel Headers
+      - name: Compile Linux Kernel
         working-directory: ./istoreos
         run: |
-          make target/linux/prepare -j$(nproc) V=s
+          make target/linux/compile -j$(nproc) V=s
 
       - name: Compile kmod-r8125
         working-directory: ./istoreos
