@@ -41,14 +41,21 @@ jobs:
       - name: Configure target x86_64 and kmod-r8125
         working-directory: ./istoreos
         run: |
-          # 下载 iStoreOS x86_64_efi 官方的 config.seed，确保内核配置与固件一致
           wget -O .config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.seed
-
-          # 强制选中 r8125 驱动，并关闭可能冲突的 r8169
           echo "CONFIG_PACKAGE_kmod-r8125=y" >> .config
           echo "# CONFIG_PACKAGE_kmod-r8169 is not set" >> .config
-
           make defconfig
+
+      - name: Install Tools and Toolchain
+        working-directory: ./istoreos
+        run: |
+          make tools/install -j$(nproc) V=s
+          make toolchain/install -j$(nproc) V=s
+
+      - name: Prepare Kernel Headers
+        working-directory: ./istoreos
+        run: |
+          make target/linux/prepare -j$(nproc) V=s
 
       - name: Compile kmod-r8125
         working-directory: ./istoreos
